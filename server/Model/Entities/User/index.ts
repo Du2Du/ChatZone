@@ -1,4 +1,4 @@
-import { mongoose } from "../..";
+var mongoose = require("mongoose");
 
 export const User = mongoose.model("User", {
   id: Number,

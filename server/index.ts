@@ -1,27 +1,37 @@
-export const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-export const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const dotenv = require("dotenv");
+import bodyParser from "body-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import helmet from "helmet";
+import mongoose from "mongoose";
+import morgan from "morgan";
+import responseTime from "response-time";
 
+//dotenv Config
 dotenv.config();
 
+//DB Url
 const dbUrl = process.env.DB_URL;
 
+//Db Connection
 mongoose.connect(dbUrl, () => {
   console.log("Connected to DB");
 });
 
 export const app = express();
+
+//Config and Middlewares
 app.use(cors({ origin: "*" }));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(responseTime());
+
+//Controllers
 app.use("/api/message", require("./Controllers/Message"));
 
-app.listen(5000, () => {
-  console.log("🚀💻 Server is running on port 5000 💻🚀");
+//Start Server
+app.listen(process.env.PORT, () => {
+  console.log(`🚀💻 Server is running on port ${process.env.PORT} 💻🚀`);
 });
