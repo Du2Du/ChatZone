@@ -8,14 +8,14 @@ export const userBO = () => {
   const login: RequestHandler = async (req, res, next) => {
     const data = userDTO.parse(req.body);
     const { email } = data;
-    const session = conn.startSession();
+    const session = await conn.startSession();
 
     try {
       session.startTransaction();
       const user = await User.findOne({ email });
       if (!user) {
         const createdUser = await User.create(data);
-        session.commitTransaction();
+        await session.commitTransaction();
         session.endSession();
         return res
           .send(successResponse("User created successfully!", createdUser))
@@ -23,7 +23,7 @@ export const userBO = () => {
       }
       return res.send(successResponse("Login successfully!", user)).status(200);
     } catch (err) {
-      session.abortTransaction();
+      await session.abortTransaction();
       session.endSession();
       return res
         .send(errorResponse("An error occurred, please try again later!"))

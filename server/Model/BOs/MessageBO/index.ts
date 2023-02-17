@@ -20,14 +20,14 @@ export const messageBO = () => {
     try {
       session.startTransaction();
       const createdMessage = await Message.create(dataBody);
-      session.commitTransaction();
+      await session.commitTransaction();
       session.endSession();
 
       return res
         .send(successResponse("Message created successfully!", createdMessage))
         .status(201);
     } catch (err) {
-      session.abortTransaction();
+      await session.abortTransaction();
       session.endSession();
       return res.send(errorResponse("Message was not created!")).status(400);
     }
@@ -44,12 +44,12 @@ export const messageBO = () => {
       if (!message)
         res.send(errorResponse("Message was not found!")).status(404);
       await Message.deleteOne({ _id: req.params.id });
-      session.commitTransaction();
+      await session.commitTransaction();
       session.endSession();
 
       return res.send(successResponse("Message deleted successfully!"));
     } catch (err) {
-      session.abortTransaction();
+      await session.abortTransaction();
       session.endSession();
       return res.send(errorResponse("Message was not deleted!")).status(400);
     }
