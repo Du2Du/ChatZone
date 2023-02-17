@@ -30,7 +30,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(responseTime());
 
 //Controllers
-app.use("/api/message", require("./Controllers/Message"));
+app.use("/api/message", require("./Controllers/MessageController"));
+app.use("/api/user", require("./Controllers/UserController"));
 
 //Start Server
 app.listen(process.env.PORT, () => {

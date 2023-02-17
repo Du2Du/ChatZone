@@ -1,6 +1,14 @@
+import { Schema } from "mongoose";
+
 var mongoose = require("mongoose");
 
-export const User = mongoose.model("User", {
-  id: Number,
-  email: String,
+export interface UserProps {
+  _id: string;
+  email: string;
+}
+
+const userSchema = new Schema<UserProps>({
+  email: { type: String, required: true },
 });
+
+export const User = mongoose.model("User", userSchema);
