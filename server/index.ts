@@ -17,6 +17,7 @@ const dbUrl = process.env.DB_URL;
 mongoose.connect(dbUrl, () => {
   console.log("Connected to DB");
 });
+export const conn = mongoose.connection;
 
 export const app = express();
 

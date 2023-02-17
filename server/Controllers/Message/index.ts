@@ -1,19 +1,11 @@
-import { Request, Response } from "express";
-import { messageDTO } from "../../Model/DTOs/MessageDTO";
-import { Message } from "../../Model/Entities/Message";
 import express from "express";
-import { successResponse, errorResponse } from "../../Utils/Response";
+import { messageBO } from "../../Model/BOs/MessageBO";
 
 const router = express.Router();
+const { createMessage, deleteMessage, getAllMessages } = messageBO();
 
-router.post("/", (req: Request, res: Response) => {
-  const dataBody = { ...messageDTO.parse(req.body), hour: new Date() };
-  try {
-    Message.create(dataBody);
-    return res.send(successResponse("Message created successfully!", dataBody));
-  } catch (err) {
-    return res.send(errorResponse("Message was not created!", dataBody));
-  }
-});
+router.get("/", getAllMessages);
+router.post("/", createMessage);
+router.delete("/:id", deleteMessage);
 
 module.exports = router;
