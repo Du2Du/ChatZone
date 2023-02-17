@@ -19,13 +19,13 @@ export const messageBO = () => {
     const session = await conn.startSession();
     try {
       session.startTransaction();
-      await Message.create(dataBody);
+      const createdMessage = await Message.create(dataBody);
       session.commitTransaction();
       session.endSession();
 
-      return res.send(
-        successResponse("Message created successfully!", dataBody)
-      );
+      return res
+        .send(successResponse("Message created successfully!", createdMessage))
+        .status(201);
     } catch (err) {
       session.abortTransaction();
       session.endSession();
@@ -56,18 +56,12 @@ export const messageBO = () => {
   };
 
   const getAllMessages: RequestHandler = async (req, res) => {
-    const session = await conn.startSession();
     try {
-      session.startTransaction();
       const messages = await Message.find();
-      session.commitTransaction();
-      session.endSession();
       return res.send(
         successResponse("Messages found successfully!", messages)
       );
     } catch (err) {
-      session.abortTransaction();
-      session.endSession();
       return res.send(errorResponse("Messages not found!")).status(404);
     }
   };

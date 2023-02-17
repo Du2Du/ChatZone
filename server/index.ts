@@ -35,5 +35,6 @@ app.use("/api/user", require("./Controllers/UserController"));
 
 //Start Server
 app.listen(process.env.PORT, () => {
+  console.log("---------------------------------------------------------");
   console.log(`🚀💻 Server is running on port ${process.env.PORT} 💻🚀`);
 });

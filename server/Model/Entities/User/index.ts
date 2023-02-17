@@ -1,6 +1,4 @@
-import { Schema } from "mongoose";
-
-var mongoose = require("mongoose");
+import mongoose, { Schema } from "mongoose";
 
 export interface UserProps {
   _id: string;
