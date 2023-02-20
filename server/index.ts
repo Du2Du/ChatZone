@@ -6,10 +6,10 @@ import helmet from "helmet";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import responseTime from "response-time";
+import http from 'http';
 
 //dotenv Config
 dotenv.config();
-
 //DB Url
 const dbUrl = process.env.DB_URL;
 
@@ -20,6 +20,8 @@ mongoose.connect(dbUrl, () => {
 export const conn = mongoose.connection;
 
 export const app = express();
+const server = http.createServer(app);
+const io = require('socket.io')(server);
 
 //Config and Middlewares
 app.use(cors({ origin: "*" }));
@@ -30,9 +32,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(responseTime());
 
 //Controllers
-app.use("/api/message", require("./Controllers/Message"));
+app.use("/api/message", require("./Controllers/MessageController"));
+app.use("/api/user", require("./Controllers/UserController"));
 
 //Start Server
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
+  console.log("---------------------------------------------------------");
   console.log(`🚀💻 Server is running on port ${process.env.PORT} 💻🚀`);
 });

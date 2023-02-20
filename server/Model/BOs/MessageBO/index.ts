@@ -19,15 +19,15 @@ export const messageBO = () => {
     const session = await conn.startSession();
     try {
       session.startTransaction();
-      await Message.create(dataBody);
-      session.commitTransaction();
+      const createdMessage = await Message.create(dataBody);
+      await session.commitTransaction();
       session.endSession();
 
-      return res.send(
-        successResponse("Message created successfully!", dataBody)
-      );
+      return res
+        .send(successResponse("Message created successfully!", createdMessage))
+        .status(201);
     } catch (err) {
-      session.abortTransaction();
+      await session.abortTransaction();
       session.endSession();
       return res.send(errorResponse("Message was not created!")).status(400);
     }
@@ -44,30 +44,24 @@ export const messageBO = () => {
       if (!message)
         res.send(errorResponse("Message was not found!")).status(404);
       await Message.deleteOne({ _id: req.params.id });
-      session.commitTransaction();
+      await session.commitTransaction();
       session.endSession();
 
       return res.send(successResponse("Message deleted successfully!"));
     } catch (err) {
-      session.abortTransaction();
+      await session.abortTransaction();
       session.endSession();
       return res.send(errorResponse("Message was not deleted!")).status(400);
     }
   };
 
   const getAllMessages: RequestHandler = async (req, res) => {
-    const session = await conn.startSession();
     try {
-      session.startTransaction();
       const messages = await Message.find();
-      session.commitTransaction();
-      session.endSession();
       return res.send(
         successResponse("Messages found successfully!", messages)
       );
     } catch (err) {
-      session.abortTransaction();
-      session.endSession();
       return res.send(errorResponse("Messages not found!")).status(404);
     }
   };
