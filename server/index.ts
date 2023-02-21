@@ -8,7 +8,6 @@ import morgan from "morgan";
 import responseTime from "response-time";
 import http from 'http';
 import { Socket } from "socket.io";
-import { MessageProps } from "./Model/Entities/Message";
 
 //dotenv Config
 dotenv.config();
@@ -40,7 +39,7 @@ app.use("/api/user", require("./Controllers/UserController"));
 //WebSocket Connection
 webSocket.on("connection", (socket: Socket) => {
 
-  socket.on("sendMessage", (message: MessageProps) => {
+  socket.on("sendMessage", (message: any) => {
     socket.broadcast.emit("receiveMessage", message);
   });
 
