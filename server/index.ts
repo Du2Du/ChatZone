@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import responseTime from "response-time";
 import http from 'http';
+import { Socket } from "socket.io";
 
 //dotenv Config
 dotenv.config();
@@ -21,7 +22,7 @@ export const conn = mongoose.connection;
 
 export const app = express();
 const server = http.createServer(app);
-const io = require('socket.io')(server);
+const webSocket = require('socket.io')(server);
 
 //Config and Middlewares
 app.use(cors({ origin: "*" }));
@@ -34,6 +35,18 @@ app.use(responseTime());
 //Controllers
 app.use("/api/message", require("./Controllers/MessageController"));
 app.use("/api/user", require("./Controllers/UserController"));
+
+//WebSocket Connection
+webSocket.on("connection", (socket: Socket) => {
+
+  socket.on("sendMessage", (message: any) => {
+    socket.broadcast.emit("receiveMessage", message);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client Disconnected");
+  })
+})
 
 //Start Server
 server.listen(process.env.PORT, () => {
